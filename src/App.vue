@@ -2,149 +2,98 @@
   import { ref } from 'vue'
 
 
-const produtos = [
-    {
-        id: 1,
-        nome: 'Camiseta',
-        preco: 49.90
-    },
-    {
-        id: 2,
-        nome: 'Calça',
-        preco: 99.90
-    },
-    {
-        id: 3,
-        nome: 'Meia',
-        preco: 9.90
-    },
-    {
-        id: 4,
-        nome: 'Sapato',
-        preco: 199.90
-    },
-    {
-        id: 5,
-        nome: 'Boné',
-        preco: 29.90
-    },
-    {
-        id: 6,
-        nome: 'Óculos',
-        preco: 99.90
-    },
-    {
-        id: 7,
-        nome: 'Relógio',
-        preco: 299.90
-    },
-    {
-        id: 8,
-        nome: 'Bermuda',
-        preco: 79.90
-    },
-    {
-        id: 9,
-        nome: 'Cueca',
-        preco: 19.90
-    },
-    {
-        id: 10,
-        nome: 'Meia',
-        preco: 9.90
-    }
-]
-const carrinho = ref( [
+const produtos = ref([
     {
         id: 1,
         nome: 'Camiseta',
         preco: 49.90,
-        quantidade: 0,
-        valorTotal: 49.90
+        quantidade: 1
     },
     {
         id: 2,
         nome: 'Calça',
         preco: 99.90,
-        quantidade: 0,
-        valorTotal: 49.90
+        quantidade: 1
     },
     {
         id: 3,
         nome: 'Meia',
         preco: 9.90,
-        quantidade: 0,
-        valorTotal: 49.90
+        quantidade: 1
     },
     {
         id: 4,
         nome: 'Sapato',
         preco: 199.90,
-        quantidade: 0,
-        valorTotal: 49.90
+        quantidade: 1
     },
     {
         id: 5,
         nome: 'Boné',
         preco: 29.90,
-        quantidade: 0,
-        valorTotal: 49.90
+        quantidade: 1
     },
     {
         id: 6,
         nome: 'Óculos',
         preco: 99.90,
-        quantidade: 0,
-        valorTotal: 49.90
+        quantidade: 1
     },
     {
         id: 7,
         nome: 'Relógio',
         preco: 299.90,
-        quantidade: 1,
-        valorTotal: 49.90
+        quantidade: 1
     },
     {
         id: 8,
         nome: 'Bermuda',
         preco: 79.90,
-        quantidade: 0,
-        valorTotal: 49.90
+        quantidade: 1
     },
     {
         id: 9,
         nome: 'Cueca',
         preco: 19.90,
-        quantidade: 0,
-        valorTotal: 49.90
+        quantidade: 1
     },
     {
         id: 10,
         nome: 'Meia',
         preco: 9.90,
-        quantidade: 0,
-        valorTotal: 49.90
+        quantidade: 1
     }
 ])
 
+const carrinho = ref([])
+
 const botao = ref(false)
-function bot (){
-    botao.value = true
+
+
+function bot() {
+    botao.value = !botao.value; 
 }
-function adicionar(produto){
-    const index = carrinho.value.findIndex(item => item.id === produto.id)
-    if (index > -1) {
-        carrinho.value[index].quantidade++
-    }     
+
+function adicionar(id) {
+    const index = carrinho.value.findIndex(item => item.id === id)
+    carrinho.value[index].quantidade++
 }
-function remover(produto){
- 
-    }
+
+function diminuir(id) {
+  const index = carrinho.value.findIndex(item => item.id === id)
+if(carrinho.value[index].quantidade > 0){
+    carrinho.value[index].quantidade--
+}
+}
 
 
 
-
-
+function addToCart(id, nome, preco, quantidade) {
+    carrinho.value.push({id, nome, preco, quantidade});
+}
+function retirar(index){
+    carrinho.value.splice(index, 1)
+}
 </script>
 
 <template>
@@ -154,17 +103,20 @@ function remover(produto){
     </div>
     <div>
         <ul>
-            <li v-for="items in produtos" :key="items.id">{{ items.nome }} - {{ items.preco }}
-                <button @click="adicionar(items)" class="bot">adicionar ao carrinho</button>
+            <li v-for="item in produtos" :key="item.id">{{ item.nome }} - {{ item.preco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}
+                <button @click="addToCart(item.id, item.nome, item.preco, item.quantidade)" class="btn btn-outline-primary">adicionar ao carrinho</button>
+                <button @click="retirar(index)" class="btn btn-outline-primary">retirar do carrinho</button>
             </li>
         </ul>
     </div>
     <button @click="bot" type="button" class="btn btn-primary">Mostrar carrinho</button>
 
-    <div v-if="botao == true">
+    <div v-if="botao">
         <ul>
-            <li v-for="car in carrinho" :key="car.id">{{ car.nome }} - {{ car.preco }} - {{ car.quantidade }}
-                <button @click="remover" class="bot">retirar do carrinho</button>
+            <li v-for="car in carrinho" :key="car.id">{{ car.nome }} - Qtd:{{ car.quantidade }}
+                <button class="btn btn-info" @click="adicionar(car.id)">+</button>
+                <button class="btn btn-info" @click="diminuir(car.id)">-</button>
+                <p>Total a pagar:R$ {{ car.preco * car.quantidade }}</p>
             </li>
         </ul>
     </div>
