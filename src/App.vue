@@ -99,7 +99,7 @@ function retirar(index){
 <template>
     <div class="container-fluid">
         <h1>loja CRF</h1>
-        <img src="flamengo.webp" alt="fla">
+        
     </div>
     <div>
         <ul>
